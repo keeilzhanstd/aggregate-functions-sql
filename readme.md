@@ -74,9 +74,9 @@ SELECT id, name, surname, birth_day from customers
 ```sql
 SELECT * from customers public
 ```
-![image](https://user-images.githubusercontent.com/48368029/121825347-a7c7ff80-ccd3-11eb-97eb-d8d5242d157c.png)
+![image](https://user-images.githubusercontent.com/48368029/121825347-a7c7ff80-ccd3-11eb-97eb-d8d5242d157c.png)  
 Если мы попытаемся узнать конфиденциальную информацию о клиенте через view, то получим следущее  
-![image](https://user-images.githubusercontent.com/48368029/121825363-ca5a1880-ccd3-11eb-8ee2-3f99deb0dc6e.png)
+![image](https://user-images.githubusercontent.com/48368029/121825363-ca5a1880-ccd3-11eb-8ee2-3f99deb0dc6e.png)  
 
 ## JOINS
 
@@ -182,9 +182,10 @@ WHERE order_date
 Далее мы используем `WHERE order_date` чтобы указать в каком столбце будет оперировать наш оператор between.  
 Затем, сразу после **BETWEEN** указывем начало диапазона, а сразу после **AND** конец диапазона. Это почти как in range(start, end) в нашем любимом Python.  
 Ну и конечно же отсортируем все по столбцу order_date, чтобы получить эстетическое удовольствие (наверное)  
-Вуаля! получаем заказы сделанные в тот самый промежуток. Однако **BETWEEN** используется не только с датами, вот примеры использованния BETWEEN с числовым типом и строкой.
+Вуаля! получаем заказы сделанные в тот самый промежуток.  
+Однако **BETWEEN** используется не только с датами, вот примеры использованния BETWEEN с числовым типом и строкой.
 
-#### int  
+#### Пример с числовым диапазоном.
 Продукты цена которых находится в промежутке между 100 и 200  
 ```sql
 SELECT * from products
@@ -194,7 +195,7 @@ WHERE price
 ```
 ![image](https://user-images.githubusercontent.com/48368029/121827049-828bbf00-ccdc-11eb-8919-fda0b82dc08e.png)
 
-#### string  
+#### Пример со строковым диапазоном. 
 Клиенты имена которых начинаются с буквы в промежутке между A и G  
 ```sql
 SELECT * from customers_public
@@ -204,8 +205,58 @@ WHERE name
 ![image](https://user-images.githubusercontent.com/48368029/121827136-c7175a80-ccdc-11eb-9dad-c717af0cb3ca.png)
 
 ## LIKE / ILIKE
+Оператор **LIKE** используется в предложении WHERE для поиска указанного шаблона в столбце.
+
+В сочетании с оператором **LIKE** часто используются два подстановочных знака (так называемых WILDCARDS):
+
+ - Знак процента (%) представляет ноль, один или несколько символов.
+ - Знак подчеркивания (_) представляет собой один одиночный символ.
 
 ```sql
 SELECT * from customers
 	WHERE email like '%.com'
 ```
+![image](https://user-images.githubusercontent.com/48368029/121827525-30e43400-ccde-11eb-8bd8-be7d9e206495.png)
+В этом примере, мы ищем клиентов электронный адрес которых похож на наш шаблон '%.com', здесь это означает что мы ищем email, с любым количеством символов (%) а сразу после ".com"  
+
+```sql
+SELECT * from customers
+	WHERE email like '%google.com'
+```
+![image](https://user-images.githubusercontent.com/48368029/121827603-7c96dd80-ccde-11eb-8b36-5ee55fd5d76d.png)
+Здесь ищем, клиентов email, которого заканчивается на "google.com"
+
+Если мы ищем клиента который зарегистрировался используя google, то `google.com` недостаточно, ведь некоторые вполне могли использовать `google.ru` или `google.hk`. Воспользуемся WILDCARDS, чтобы проконтролировать этот момент.  
+
+```sql
+SELECT * from customers
+	WHERE email like '%google.%'
+```
+![image](https://user-images.githubusercontent.com/48368029/121827719-e0b9a180-ccde-11eb-86a7-8fa69157ab80.png)  
+Что означает `where email like %google.%`? Это значит что мы сравниваем значение в поле email в таблице customer с "{любые символы} + google. + {любые символы}"
+
+#### ILIKE
+**ILIKE** сравним с LIKE, отличие лишь в том что ILIKE игнорирует регистр.   
+Первый запрос c LIKE не выдаст ничего, поскольку все наши адреса начинаются с большой буквы (Russia, Romania).   
+ILIKE же в свою очередь выведет клиентов, адрес которых начинается на R
+```sql
+SELECT * from customers
+    WHERE address like '%r%'
+
+SELECT * from customers
+    WHERE address ilike '%r%'
+```
+
+![image](https://user-images.githubusercontent.com/48368029/121827961-dfd53f80-ccdf-11eb-9ad8-bf2e2086a270.png)   
+![image](https://user-images.githubusercontent.com/48368029/121827970-e95ea780-ccdf-11eb-885f-987ed4bd157a.png)
+
+
+Напоследок, что выдаст следущий запрос?
+```sql
+SELECT * from customers_public
+    WHERE name ilike '_o%'
+```
+
+![image](https://user-images.githubusercontent.com/48368029/121828025-17dc8280-cce0-11eb-96d9-e9546b0aba11.png)  
+Верно, пользователей, вторая буква в имени которых равна `о`.  
+Эти WILDCARDS очень мощны, обязательно разберитесь в них, они вам очень пригодятся.  
