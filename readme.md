@@ -213,38 +213,39 @@ WHERE name
  - Знак подчеркивания (_) представляет собой один одиночный символ.
 
 ```sql
-SELECT * from customers
-	WHERE email like '%.com'
+SELECT * FROM customers
+	WHERE email LIKE '%.com'
 ```
 ![image](https://user-images.githubusercontent.com/48368029/121827525-30e43400-ccde-11eb-8bd8-be7d9e206495.png)
-В этом примере, мы ищем клиентов электронный адрес которых похож на наш шаблон '%.com', здесь это означает что мы ищем email, с любым количеством символов (%) а сразу после ".com"  
+В этом примере, мы ищем клиентов электронный адрес которых, присутствует наш шаблон '%.com'.  
+Это означает что мы ищем email, с любым количеством символов (%), а сразу после ".com"  
 
 ```sql
-SELECT * from customers
-	WHERE email like '%google.com'
+SELECT * FROM customers
+	WHERE email LIKE '%google.com'
 ```
-![image](https://user-images.githubusercontent.com/48368029/121827603-7c96dd80-ccde-11eb-8b36-5ee55fd5d76d.png)
-Здесь ищем, клиентов email, которого заканчивается на "google.com"
+![image](https://user-images.githubusercontent.com/48368029/121827603-7c96dd80-ccde-11eb-8b36-5ee55fd5d76d.png)  
+Здесь мы ищем клиентов, email которых заканчивается на "google.com"
 
-Если мы ищем клиента который зарегистрировался используя google, то `google.com` недостаточно, ведь некоторые вполне могли использовать `google.ru` или `google.hk`. Воспользуемся WILDCARDS, чтобы проконтролировать этот момент.  
+Если мы ищем клиента который зарегистрировался используя google, то `google.com` недостаточно, ведь некоторые вполне могли использовать `google.ru` или `google.hk`. Воспользуемся **WILDCARDS**, чтобы проконтролировать этот момент.  
 
 ```sql
 SELECT * from customers
-	WHERE email like '%google.%'
+	WHERE email LIKE '%google.%'
 ```
 ![image](https://user-images.githubusercontent.com/48368029/121827719-e0b9a180-ccde-11eb-86a7-8fa69157ab80.png)  
-Что означает `where email like %google.%`? Это значит что мы сравниваем значение в поле email в таблице customer с "{любые символы} + google. + {любые символы}"
+Что означает `WHERE email LIKE %google.%`? Это значит что мы сравниваем значение в поле email в таблице customer с "{любые символы} + google. + {любые символы}"
 
 #### ILIKE
-**ILIKE** сравним с LIKE, отличие лишь в том что ILIKE игнорирует регистр.   
-Первый запрос c LIKE не выдаст ничего, поскольку все наши адреса начинаются с большой буквы (Russia, Romania).   
-ILIKE же в свою очередь выведет клиентов, адрес которых начинается на R
+**ILIKE** сравним с **LIKE**, отличие лишь в том что **ILIKE** игнорирует регистр.   
+Первый запрос c **LIKE** не выдаст ничего, поскольку все наши адреса начинаются с большой буквы (Russia, Romania).   
+**ILIKE** же в свою очередь выведет клиентов, адрес которых начинается на R
 ```sql
 SELECT * from customers
-    WHERE address like '%r%'
+    WHERE address LIKE '%r%'
 
 SELECT * from customers
-    WHERE address ilike '%r%'
+    WHERE address ILIKE '%r%'
 ```
 
 ![image](https://user-images.githubusercontent.com/48368029/121827961-dfd53f80-ccdf-11eb-9ad8-bf2e2086a270.png)   
